@@ -5,7 +5,7 @@
 <title>Quiz + Envelope Letter</title>
 <style>
   body {
-    margin: 100;
+    margin: 0;
     background: #e28cab; /* Pink background */
     height: 100vh;
     display: flex;
@@ -27,16 +27,14 @@
   h1 {
     margin-bottom: 20px;
     color: white;
-    margin-top: 70px;
+    margin-top: 30px;
   }
 
   .button-frame {
-    top: -100px;
     position: relative;
     width: 1600px;
     height: 1500px;
     display: flex;
-border: 0px dashed white;
     justify-content: center;
     align-items: center;
     overflow: hidden;
@@ -60,18 +58,18 @@ border: 0px dashed white;
   /* Envelope Styles */
   .envelope-container {
     display: none; /* initially hidden */
-    position: fixed;   /* make it independent of other elements */
+    position: fixed;   /* center independently */
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%); /* perfectly center horizontally & vertically */
+    transform: translate(-50%, -50%);
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    width: 100%;   /* optional */
-    height: 100%;  /* optional */
+    width: 100%;
+    height: 100%;
     background-color: #ffb6c9; /* full pink background */
-    z-index: 1000; /* on top of everything */
-}
+    z-index: 1000;
+  }
   .envelope {
     position: relative;
     top: 0px;
@@ -85,9 +83,7 @@ border: 0px dashed white;
     margin-bottom: 20px;
     transition: transform 0.6s ease;
   }
-
   .envelope:hover { transform: scale(1.03); }
-
   .flap {
     position: absolute;
     top: -2px;
@@ -104,7 +100,6 @@ border: 0px dashed white;
     transition: transform 1s cubic-bezier(0.22,0.61,0.36,1);
     z-index: 3;
   }
-
   .envelope.open .flap { transform: rotateX(180deg); }
 
   .heart {
@@ -179,10 +174,16 @@ border: 0px dashed white;
   .letter-img-rotated {
     width:90%; height:auto; transform: rotate(90deg);
     transition: transform 0.6s ease;
+    cursor: pointer;
   }
-  .letter-img-rotated:hover {
-    transform: rotate(5deg) scale(6.5); border-radius:20px; z-index:9999;
+
+  /* Click-to-expand images */
+  .letter-img-rotated.expanded {
+    transform: rotate(0deg) scale(5.5);
+    z-index: 9999;
+    border-radius: 20px;
   }
+
 </style>
 </head>
 <body>
@@ -205,10 +206,10 @@ border: 0px dashed white;
 
   <div class="letter-full" id="letterFull">
     <div class="left-page">
-      <img src="1st.png" class="letter-img-rotated" alt="Left Page">
+      <img src="1st.png" class="letter-img-rotated" id="leftImg" alt="Left Page">
     </div>
     <div class="right-page">
-      <img src="image.jpg" class="letter-img-rotated" alt="Right Page">
+      <img src="image.jpg" class="letter-img-rotated" id="rightImg" alt="Right Page">
     </div>
   </div>
 </div>
@@ -226,7 +227,7 @@ const frame = document.getElementById("buttonFrame");
 
 const questionImage = document.getElementById("questionImage");
 
-let wrongClickCount = 0; // Track number of wrong clicks
+let wrongClickCount = 0; // Track wrong clicks
 
 // Initial positions
 const frameRect = frame.getBoundingClientRect();
@@ -235,10 +236,9 @@ wrongButton.style.top = `150px`;
 correctButton.style.left = `${(frameRect.width * 2/3) - correctButton.offsetWidth/2}px`;
 correctButton.style.top = `150px`;
 
-// Array of images to cycle through
-const wrongImages = ["catdog.png","angry.png", "angry2.png","sad.png"];
+// Array of images to cycle through on wrong click
+const wrongImages = ["catdog.png","angry.png","angry2.png","sad.png"];
 
-// Move wrong button randomly inside the frame only when clicked
 function moveButtonRandom(button) {
   const frameRect = frame.getBoundingClientRect();
   const btnWidth = button.offsetWidth;
@@ -272,9 +272,16 @@ btn2.addEventListener("click", () => handleAnswer(btn2));
 
 // Open envelope flap
 flap.addEventListener("click", () => envelope.classList.add("open"));
+
+// Click-to-expand images inside letter
+function toggleExpand(img) {
+  img.classList.toggle("expanded");
+}
+
+document.getElementById("leftImg").addEventListener("click", () => toggleExpand(document.getElementById("leftImg")));
+document.getElementById("rightImg").addEventListener("click", () => toggleExpand(document.getElementById("rightImg")));
 </script>
 
 </body>
 </html>
-
 
